@@ -1,0 +1,637 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem; /* Reduced from 2rem */
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: auto;
+}
+
+.header {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem; /* Reduced from 2rem */
+}
+
+.title {
+  font-size: 2rem;
+  margin: 0;
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #333;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  background-color: #f1f1f1;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+.backButton:hover {
+  background-color: #e0e0e0;
+}
+
+/* Dark mode styles */
+:global(.dark) .backButton {
+  background-color: #333;
+  color: #f1f1f1;
+}
+
+:global(.dark) .backButton:hover {
+  background-color: #444;
+}
+
+/* Filter Section Styles */
+.filterSection {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 1rem; /* Reduced from 2rem */
+  padding: 0.75rem; /* Reduced from 1.5rem */
+  background-color: #f8f8f8;
+  border-radius: 0.5rem;
+  border: 1px solid #eee;
+}
+
+:global(.dark) .filterSection {
+  background-color: #222;
+  border-color: #444;
+}
+
+.filterControls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem; /* Reduced from 1rem */
+  margin-bottom: 0.5rem; /* Reduced from 1rem */
+  align-items: center;
+}
+
+.filterGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem; /* Reduced from 0.5rem */
+}
+
+.filterGroup label {
+  font-size: 0.9rem;
+  color: #555;
+  white-space: nowrap;
+  font-weight: bold; /* Added bold font weight */
+  margin-left: 1rem; /* Added left margin */
+}
+
+:global(.dark) .filterGroup label {
+  color: #bbb;
+}
+
+.filterSelect {
+  padding: 0.25rem 0.5rem; /* Reduced from 0.4rem 0.8rem */
+  border: 1px solid #ddd;
+  border-radius: 0.25rem;
+  background-color: white;
+  font-size: 0.9rem;
+  outline: none;
+  min-width: 150px;
+}
+
+:global(.dark) .filterSelect {
+  background-color: #333;
+  border-color: #555;
+  color: #eee;
+}
+
+.resetButton {
+  padding: 0.25rem 0.5rem; /* Reduced from 0.4rem 0.8rem */
+  background-color: #f1f1f1;
+  border: 1px solid #ddd;
+  border-radius: 0.25rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-left: auto;
+}
+
+.resetButton:hover {
+  background-color: #e0e0e0;
+}
+
+:global(.dark) .resetButton {
+  background-color: #333;
+  border-color: #555;
+  color: #eee;
+}
+
+:global(.dark) .resetButton:hover {
+  background-color: #444;
+}
+
+.resultStats {
+  font-size: 0.8rem; /* Reduced from 0.9rem */
+  color: #666;
+  margin-top: 0.25rem; /* Reduced from 0.5rem */
+}
+
+:global(.dark) .resultStats {
+  color: #aaa;
+}
+
+.noResults {
+  padding: 1rem; /* Reduced from 2rem */
+  text-align: center;
+  color: #666;
+  width: 100%;
+  border-bottom: 1px solid #eee;
+}
+
+:global(.dark) .noResults {
+  color: #aaa;
+  border-bottom-color: #333;
+}
+
+/* Table Layout */
+.chordTable {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+}
+
+:global(.dark) .chordTable {
+  border-color: #333;
+}
+
+.tableHeader {
+  display: grid;
+  grid-template-columns: 240px 320px 320px 600px 100px;
+  column-gap: 10px;
+  background-color: #f5f5f5;
+  font-weight: bold;
+  border-bottom: 1px solid #ccc;
+  padding: 12px 0;
+}
+
+/* Left align first header */
+.tableHeader .nameColumn {
+  padding-left: 8px;
+  display: flex;
+  align-items: center;
+}
+
+/* Center other headers */
+.tableHeader .notationColumn,
+.tableHeader .keyboardColumn,
+.tableHeader .playColumn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+:global(.dark) .tableHeader {
+  background-color: #222;
+  border-bottom-color: #333;
+}
+
+/* Virtual Table Styles */
+.tableBody {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.autoSizerWrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Make sure virtualized rows match the table grid layout */
+.virtualList {
+  will-change: transform;
+}
+
+/* Ensure chord rows maintain proper layout when virtualized */
+.tableRow {
+  display: grid;
+  grid-template-columns: 240px 320px 320px 600px 100px;
+  column-gap: 10px;
+  margin-bottom: 1px;
+  border-bottom: 1px solid #eee;
+  padding: 8px 0;
+  height: 185px;
+  min-height: 185px;
+  max-height: 185px;
+  transition: background-color 0.2s;
+  box-sizing: border-box;
+}
+
+:global(.dark) .tableRow {
+  border-bottom-color: #333;
+}
+
+.tableRow:last-child {
+  border-bottom: none;
+}
+
+.tableRow:hover {
+  background-color: #f9f9f9;
+}
+
+:global(.dark) .tableRow:hover {
+  background-color: #2a2a2a;
+}
+
+.nameColumn {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: 8px;
+}
+
+.chordName {
+  font-weight: bold;
+}
+
+.chordAbbr {
+  color: #666;
+}
+
+:global(.dark) .chordAbbr {
+  color: #aaa;
+}
+
+/* Notation wrapper - fixed size container */
+.notation {
+  width: 320px;
+  height: 180px;
+  border: 1px solid #eee;
+  border-radius: 0.25rem;
+  overflow: hidden;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+:global(.dark) .notation {
+  border-color: #444;
+  background-color: #ffffff;
+}
+
+/* Notation column wrapper */
+.tableRow .notationColumn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Keyboard wrapper - fixed size container */
+/* Left-align variant support (Plan A) */
+.chordKeyboard {
+  width: auto; /* let JS control via inline style */
+  height: 180px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  overflow: visible;
+  position: relative;
+  padding: 0;
+}
+
+.chordKeyboard.leftAlign {
+  width: auto;
+  height: auto;
+  overflow: visible;
+}
+
+/* Keyboard column wrapper */
+.tableRow .keyboardColumn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0;
+  margin-left: 20px;
+  overflow: visible;
+}
+
+/* Center play buttons in rows */
+.tableRow .playColumn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  height: 100%;
+}
+
+/* React Piano wrapper */
+/* Wrapper around the react-piano keyboard */
+.reactPianoWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
+}
+
+.reactPianoWrapper.leftAlign {
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+/* Center the keyboard element */
+.reactPianoWrapper :global(.ReactPiano__Keyboard) {
+  margin: 0 auto;
+}
+
+.reactPianoWrapper.leftAlign :global(.ReactPiano__Keyboard) {
+  margin: 0; /* remove centering */
+}
+
+.rangeMessage {
+  text-align: center;
+  color: #666;
+}
+
+:global(.dark) .rangeMessage {
+  color: #aaa;
+}
+
+/* Play buttons */
+.playButton {
+  width: 80px;
+  padding: 0.2rem 0.4rem; /* Reduced from 0.3rem 0.5rem */
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  white-space: nowrap;
+}
+
+.playButton.arpeggio {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
+.playButton.arpeggio:hover {
+  background-color: #bbdefb;
+}
+
+.playButton.block {
+  background-color: #e8f5e9;
+  color: #388e3c;
+}
+
+.playButton.block:hover {
+  background-color: #c8e6c9;
+}
+
+:global(.dark) .playButton.arpeggio {
+  background-color: #1976d2;
+  color: white;
+}
+
+:global(.dark) .playButton.arpeggio:hover {
+  background-color: #1565c0;
+}
+
+:global(.dark) .playButton.block {
+  background-color: #388e3c;
+  color: white;
+}
+
+:global(.dark) .playButton.block:hover {
+  background-color: #2e7d32;
+}
+
+/* Currently playing indicator */
+.playing {
+  background-color: rgba(0, 128, 255, 0.05);
+ }
+
+
+/* Toggle Switch Styles */
+.toggleSwitch {
+  position: relative;
+  display: inline-block;
+  width: 150px;
+  height: 34px;
+}
+
+.toggleInput {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggleLabel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px;
+  width: 100%;
+  height: 100%;
+  background-color: #f1f1f1;
+  border-radius: 34px;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.toggleSlider {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 70px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  border-radius: 34px;
+  transition: 0.4s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.toggleOption {
+  z-index: 1;
+  padding: 0 5px;
+  color: #555;
+}
+
+.toggleInput:checked + .toggleLabel .toggleSlider {
+  transform: translateX(72px);
+}
+
+.toggleInput:checked + .toggleLabel {
+  background-color: #e0e0e0;
+}
+
+/* Dark mode styles for toggle */
+:global(.dark) .toggleLabel {
+  background-color: #333;
+  border-color: #555;
+}
+
+:global(.dark) .toggleSlider {
+  background-color: #555;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+:global(.dark) .toggleOption {
+  color: #bbb;
+}
+
+:global(.dark) .toggleInput:checked + .toggleLabel {
+  background-color: #2a2a2a;
+}
+
+:global(.dark) .toggleInput:checked + .toggleLabel .toggleSlider {
+  background-color: #4a9eff;
+}
+
+.selectedKeysDisplay {
+  display: flex;
+  align-items: center;
+  background-color: #f5f5f5;
+  border-radius: 0.25rem;
+  padding: 0.3rem 0.5rem;
+  margin-left: 0.5rem;
+  font-size: 0.8rem;
+  color: #555;
+  gap: 0.5rem;
+}
+
+:global(.dark) .selectedKeysDisplay {
+  background-color: #333;
+  color: #bbb;
+}
+
+.clearKeysButton {
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-size: 1rem;
+  line-height: 1;
+  color: #777;
+  padding: 0.1rem 0.3rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.clearKeysButton:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+  color: #333;
+}
+
+:global(.dark) .clearKeysButton {
+  color: #999;
+}
+
+:global(.dark) .clearKeysButton:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #eee;
+}
+
+/* Custom Multi-Select Styles */
+.multiSelectContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem; /* Reduced from 0.5rem */
+  align-items: center;
+}
+
+.multiSelectOption {
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 0.25rem;
+  padding: 0.2rem 0.5rem; /* Reduced from 0.3rem 0.8rem */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.2rem; /* Reduced from 0.3rem */
+  transition: all 0.2s;
+}
+
+.multiSelectOption:hover {
+  background-color: #e8e8e8;
+}
+
+.multiSelectOption.selected {
+  background-color: #e3f2fd;
+  border-color: #bbdefb;
+  color: #1976d2;
+}
+
+.optionText {
+  font-size: 0.9rem;
+}
+
+.checkmark {
+  font-size: 0.8rem;
+}
+
+.clearButton {
+  background-color: #f1f1f1;
+  border: 1px solid #ddd;
+  border-radius: 0.25rem;
+  padding: 0.2rem 0.5rem; /* Reduced from 0.3rem 0.8rem */
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.clearButton:hover {
+  background-color: #e0e0e0;
+}
+
+:global(.dark) .multiSelectOption {
+  background-color: #333;
+  border-color: #444;
+  color: #eee;
+}
+
+:global(.dark) .multiSelectOption:hover {
+  background-color: #444;
+}
+
+:global(.dark) .multiSelectOption.selected {
+  background-color: #1976d2;
+  border-color: #1565c0;
+  color: white;
+}
+
+:global(.dark) .clearButton {
+  background-color: #333;
+  border-color: #444;
+  color: #eee;
+}
+
+:global(.dark) .clearButton:hover {
+  background-color: #444;
+}
+
+.audioContainer {
+  position: fixed;
+  top: -9999px;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  z-index: -1;
+}

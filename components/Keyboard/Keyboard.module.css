@@ -1,0 +1,75 @@
+/* Marker class for interactive keyboards; used to scope overrides */
+.interactive { --interactive: 1; }
+
+/* ===== INTERACTIVE KEYBOARD (Keyboard.tsx) STYLES ===== */
+
+/* Override react-piano styles for taller keys */
+.keyboardWrapper.interactive.tallKeys :global(.ReactPiano__Key--natural) {
+  height: 250px !important;
+}
+
+.keyboardWrapper.interactive.tallKeys :global(.ReactPiano__Key--accidental) {
+  height: 150px !important;
+}
+
+.keyboardWrapper.interactive.shortKeys :global(.ReactPiano__Key--natural) {
+  height: 160px !important;
+}
+
+.keyboardWrapper.interactive.shortKeys :global(.ReactPiano__Key--accidental) {
+  height: 100px !important;
+}
+
+/* Consistent key borders - interactive only */
+.keyboardWrapper.interactive :global(.ReactPiano__Key) {
+  border-color: #000 !important;
+}
+
+/* Black keys: black background - interactive only */
+.keyboardWrapper.interactive :global(.ReactPiano__Key--accidental) {
+  background: #000 !important;
+  border-color: #000 !important;
+}
+
+/* All keys when pressed in Colors OFF mode - interactive only */
+.keyboardWrapper.interactive :global(.ReactPiano__Key--active) {
+  background: #64b5f6 !important;
+  border-color: #000 !important;
+  border-width: 1px !important;
+}
+
+/* Color mode enabled - interactive only */
+.keyboardWrapper.interactive.colorMode :global(.ReactPiano__Key--active) {
+  background: var(--key-color) !important;
+  border-color: var(--key-color) !important;
+}
+
+.keyboardWrapper.interactive.colorMode :global(.ReactPiano__Key--active.ReactPiano__Key--natural) {
+  opacity: 1 !important;
+}
+
+.keyboardWrapper.interactive.colorMode :global(.ReactPiano__Key--active.ReactPiano__Key--accidental) {
+  opacity: 1 !important;
+}
+
+.keyboardContainer {
+  margin: 12px auto;
+  width: 100%;
+  padding: 12px 8px;
+  display: flex;
+  justify-content: center;
+}
+
+.keyboardWrapper {
+  min-width: min-content;
+}
+
+/* Compact mode - disable pointer events */
+.compact {
+  pointer-events: none;
+  cursor: default;
+}
+
+.compact :global(.ReactPiano__Key) {
+  cursor: default !important;
+}

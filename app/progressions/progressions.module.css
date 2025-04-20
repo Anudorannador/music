@@ -1,0 +1,1093 @@
+/* Main container */
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 0.5rem;
+  color: inherit;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.backButton:hover {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+:global(.dark) .backButton {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+:global(.dark) .backButton:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+/* Filters */
+.filters {
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+:global(.dark) .filters {
+  background: rgba(255, 255, 255, 0.02);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.filterGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.filterGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filterLabel {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+:global(.dark) .filterLabel {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.filterSelect,
+.filterInput {
+  padding: 0.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 0.375rem;
+  background: white;
+  font-size: 0.875rem;
+}
+
+:global(.dark) .filterSelect,
+:global(.dark) .filterInput {
+  background: rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.filterStats {
+  text-align: center;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 0.875rem;
+}
+
+:global(.dark) .filterStats {
+  border-color: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Progression Card */
+.progressionCard {
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  transition: all 0.2s;
+}
+
+.progressionCard:hover {
+  border-color: rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+:global(.dark) .progressionCard {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global(.dark) .progressionCard:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.cardTitle h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+}
+
+.cardTitle {
+  flex: 1;
+  min-width: 0;
+}
+
+.cardMeta {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.badge {
+  padding: 0.25rem 0.75rem;
+  background: rgba(0, 120, 255, 0.1);
+  color: rgb(0, 120, 255);
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  border: 1px solid transparent;
+}
+
+.badge.clickable {
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.badge.clickable:hover {
+  background: rgba(0, 120, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+:global(.dark) .badge {
+  background: rgba(100, 170, 255, 0.15);
+  color: rgb(100, 170, 255);
+}
+
+:global(.dark) .badge.clickable:hover {
+  background: rgba(100, 170, 255, 0.25);
+}
+
+.genreBadge {
+  padding: 0.25rem 0.75rem;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  border: 1px solid transparent;
+}
+
+.genreBadge.clickable {
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.genreBadge.clickable:hover {
+  background: rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+}
+
+:global(.dark) .genreBadge {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+:global(.dark) .genreBadge.clickable:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.expandButton {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  color: inherit;
+  display: flex;
+  align-items: center;
+}
+
+/* Chord Sequence */
+.chordSequence {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.romanNumerals,
+.chordSymbols {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.romanNumeral,
+.chordSymbol {
+  padding: 0.5rem 1rem;
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 0.375rem;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+:global(.dark) .romanNumeral,
+:global(.dark) .chordSymbol {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.romanNumeral {
+  font-family: 'Georgia', serif;
+  font-size: 1rem;
+}
+
+.chordSymbol {
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+
+.chordSymbol:hover,
+.romanNumeral.active,
+.chordSymbol.active {
+  background: rgba(0, 120, 255, 0.1);
+  border-color: rgb(0, 120, 255);
+  color: rgb(0, 120, 255);
+}
+
+:global(.dark) .chordSymbol:hover,
+:global(.dark) .romanNumeral.active,
+:global(.dark) .chordSymbol.active {
+  background: rgba(100, 170, 255, 0.15);
+  border-color: rgb(100, 170, 255);
+  color: rgb(100, 170, 255);
+}
+
+/* Card Content */
+.cardContent {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+:global(.dark) .cardContent {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.description {
+  margin: 0 0 1rem 0;
+  color: rgba(0, 0, 0, 0.7);
+  line-height: 1.6;
+}
+
+:global(.dark) .description {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.chordFunctionsText {
+  margin: 0 0 1.5rem 0;
+  color: rgba(0, 0, 0, 0.7);
+  line-height: 1.6;
+}
+
+:global(.dark) .chordFunctionsText {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.chordFunctionsText .functionNumeral {
+  font-family: 'Georgia', serif;
+  font-weight: 700;
+  color: rgb(0, 120, 255);
+}
+
+:global(.dark) .chordFunctionsText .functionNumeral {
+  color: rgb(100, 170, 255);
+}
+
+.chordFunctionsText .functionChord {
+  font-weight: 600;
+}
+
+.chordFunctionsText .functionName {
+  font-size: 0.875em;
+  opacity: 0.7;
+}
+
+.metadata {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.metaGroup {
+  font-size: 0.875rem;
+}
+
+.metaGroup strong {
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.chordFunctions {
+  margin-bottom: 1.5rem;
+}
+
+.chordFunctions h4,
+.chordFunctions strong {
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+.keyboardVisualization {
+  margin: 1.5rem 0;
+}
+
+.chordFunctions h4,
+
+.downloadButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: rgba(0, 120, 255, 0.1);
+  color: rgb(0, 120, 255);
+  border: 1px solid rgba(0, 120, 255, 0.3);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.downloadButton svg {
+  flex-shrink: 0;
+}
+
+.downloadButton:hover {
+  background: rgb(0, 120, 255);
+  color: white;
+  border-color: rgb(0, 120, 255);
+}
+
+:global(.dark) .downloadButton {
+  background: rgba(100, 170, 255, 0.15);
+  border-color: rgba(100, 170, 255, 0.3);
+  color: rgb(100, 170, 255);
+}
+
+:global(.dark) .downloadButton:hover {
+  background: rgb(100, 170, 255);
+  color: black;
+  border-color: rgb(100, 170, 255);
+}
+
+.compactVisualization {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  border: 2px solid rgba(0, 120, 255, 0.2);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.02);
+  margin-top: 1rem;
+}
+
+:global(.dark) .compactVisualization {
+  background: rgba(255, 255, 255, 0.02);
+  border-color: rgba(100, 170, 255, 0.2);
+}
+
+.visualizationTop {
+  display: flex;
+  gap: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+:global(.dark) .visualizationTop {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.chordDisplay {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.progressionInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.progressionInfo .description {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.progressionInfo .chordFunctionsText {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.compactKeyboard {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* Combined row: player (left) + keyboard (right) */
+.keyboardAndPlayerRow {
+  display: flex;
+  gap: 0.5rem; /* tighter gap between keyboard and player */
+  align-items: stretch;
+}
+
+.playerSide {
+  /* Allow intrinsic sizing instead of a fixed width */
+  width: auto;
+  flex: 0 1 auto; /* permit growth but don't force shrink below content */
+  min-width: fit-content; /* expand to fit internal controls */
+}
+
+.keyboardSide {
+  flex: 0 0 auto; /* don't stretch keyboard, let it size itself */
+  overflow-x: auto;
+}
+
+/* Player */
+.player {
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 0.5rem;
+  margin-left: 15px; /* add left margin to separate from keyboard */
+}
+
+:global(.dark) .player {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.playerControls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* New two-row, left-column layout for player */
+.playerControlsColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.playerRowPrimary {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.playerRowSecondary {
+  display: flex;
+  align-items: center;
+}
+
+/* Inline now-playing next to play button */
+.nowPlayingInline {
+  display: flex;
+  align-items: center;
+  min-height: 32px;
+  min-width: 120px; /* reserve some width to reduce layout shift when text appears */
+}
+
+.playButton {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  background: rgb(0, 120, 255);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.playButton:hover {
+  background: rgb(0, 100, 220);
+  transform: scale(1.05);
+}
+
+:global(.dark) .playButton {
+  background: rgb(100, 170, 255);
+  color: black;
+}
+
+:global(.dark) .playButton:hover {
+  background: rgb(120, 185, 255);
+}
+
+.tempoControl {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+  min-width: 200px;
+}
+
+.tempoControl label {
+  font-size: 0.875rem;
+}
+
+.tempoSlider {
+  width: 100%;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkboxLabel input {
+  cursor: pointer;
+}
+
+.loopToggle {
+  padding: 0.4rem 0.75rem;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  background: transparent;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  color: rgba(0, 0, 0, 0.6);
+  margin-right: 15px; /* add spacing between loop and mode toggle */
+}
+
+.loopToggle:hover {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+.loopToggle.active {
+  background: rgba(0, 120, 255, 0.1);
+  border-color: rgb(0, 120, 255);
+  color: rgb(0, 120, 255);
+  font-weight: 600;
+}
+
+:global(.dark) .loopToggle {
+  border-color: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+:global(.dark) .loopToggle:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+:global(.dark) .loopToggle.active {
+  background: rgba(100, 170, 255, 0.15);
+  border-color: rgb(100, 170, 255);
+  color: rgb(100, 170, 255);
+}
+
+.modeToggle {
+  display: flex;
+  gap: 0.25rem;
+  background: rgba(0, 0, 0, 0.05);
+  padding: 0.25rem;
+  border-radius: 0.375rem;
+}
+
+:global(.dark) .modeToggle {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.modeButton {
+  padding: 0.5rem 1rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  transition: all 0.2s;
+}
+
+.modeButton.active {
+  background: white;
+  font-weight: 600;
+}
+
+:global(.dark) .modeButton.active {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.nowPlayingContainer {
+  min-width: 120px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nowPlayingPlaceholder {
+  width: 100%;
+  height: 1px;
+}
+
+.nowPlaying {
+  padding: 0.4rem 0.75rem;
+  background: rgba(0, 120, 255, 0.1);
+  border: 1px solid rgb(0, 120, 255);
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  text-align: center;
+  white-space: nowrap;
+}
+
+:global(.dark) .nowPlaying {
+  background: rgba(100, 170, 255, 0.15);
+  border-color: rgb(100, 170, 255);
+}
+
+/* Progression Builder */
+.progressionBuilder {
+  margin-top: 2rem;
+  padding: 2rem;
+  background: rgba(0, 120, 255, 0.02);
+  border: 2px dashed rgba(0, 120, 255, 0.3);
+  border-radius: 0.75rem;
+}
+
+:global(.dark) .progressionBuilder {
+  background: rgba(100, 170, 255, 0.05);
+  border-color: rgba(100, 170, 255, 0.3);
+}
+
+.progressionBuilder h2 {
+  font-size: 1.75rem;
+  margin: 0 0 1.5rem 0;
+}
+
+.builderContent {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.builderSection h3 {
+  font-size: 1.25rem;
+  margin: 0 0 1rem 0;
+}
+
+.chordPalette {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 0.75rem;
+}
+
+.paletteChord {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem 0.5rem;
+  background: white;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.paletteChord:hover {
+  border-color: rgb(0, 120, 255);
+  background: rgba(0, 120, 255, 0.05);
+  transform: translateY(-2px);
+}
+
+:global(.dark) .paletteChord {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+:global(.dark) .paletteChord:hover {
+  border-color: rgb(100, 170, 255);
+  background: rgba(100, 170, 255, 0.1);
+}
+
+.paletteRoman {
+  font-family: 'Georgia', serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.paletteSymbol {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.paletteFunction {
+  font-size: 0.625rem;
+  color: rgba(0, 0, 0, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+:global(.dark) .paletteFunction {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.emptyState {
+  text-align: center;
+  padding: 3rem;
+  color: rgba(0, 0, 0, 0.4);
+  font-style: italic;
+}
+
+:global(.dark) .emptyState {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.customProgression {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding: 1.5rem;
+  background: white;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-radius: 0.5rem;
+  min-height: 100px;
+}
+
+:global(.dark) .customProgression {
+  background: rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.customChord {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: rgba(0, 120, 255, 0.05);
+  border: 2px solid rgba(0, 120, 255, 0.3);
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+}
+
+.customChord.active {
+  background: rgba(0, 120, 255, 0.15);
+  border-color: rgb(0, 120, 255);
+}
+
+:global(.dark) .customChord {
+  background: rgba(100, 170, 255, 0.1);
+  border-color: rgba(100, 170, 255, 0.3);
+}
+
+:global(.dark) .customChord.active {
+  background: rgba(100, 170, 255, 0.2);
+  border-color: rgb(100, 170, 255);
+}
+
+.removeChord {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 0, 0, 0.8);
+  color: white;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.removeChord:hover {
+  background: rgb(255, 0, 0);
+  transform: scale(1.1);
+}
+
+.customRoman {
+  font-family: 'Georgia', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.customSymbol {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.builderActions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.actionButton {
+  padding: 0.75rem 1.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 0.5rem;
+  background: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.actionButton:hover {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.3);
+}
+
+:global(.dark) .actionButton {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+:global(.dark) .actionButton:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.savedList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.savedItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 0.5rem;
+}
+
+:global(.dark) .savedItem {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.savedInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.savedChords {
+  font-size: 0.875rem;
+  color: rgba(0, 0, 0, 0.6);
+  font-family: 'Georgia', serif;
+}
+
+:global(.dark) .savedChords {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.savedActions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.loadButton,
+.deleteButton {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.loadButton {
+  background: rgb(0, 120, 255);
+  color: white;
+}
+
+.loadButton:hover {
+  background: rgb(0, 100, 220);
+}
+
+.deleteButton {
+  background: rgba(255, 0, 0, 0.1);
+  color: rgb(200, 0, 0);
+}
+
+.deleteButton:hover {
+  background: rgba(255, 0, 0, 0.2);
+}
+
+:global(.dark) .loadButton {
+  background: rgb(100, 170, 255);
+  color: black;
+}
+
+:global(.dark) .loadButton:hover {
+  background: rgb(120, 185, 255);
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+:global(.dark) .tabs {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.tab {
+  padding: 1rem 2rem;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: rgba(0, 0, 0, 0.5);
+  margin-bottom: -2px;
+}
+
+.tab:hover {
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.tab.active {
+  color: rgb(0, 120, 255);
+  border-bottom-color: rgb(0, 120, 255);
+}
+
+:global(.dark) .tab {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+:global(.dark) .tab:hover {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+:global(.dark) .tab.active {
+  color: rgb(100, 170, 255);
+  border-bottom-color: rgb(100, 170, 255);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .filterGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .cardHeader {
+    flex-direction: column;
+  }
+
+  .compactVisualization {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .visualizationTop {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .chordDisplay {
+    width: 100%;
+  }
+
+  .compactKeyboard {
+    overflow-x: auto;
+  }
+
+  .downloadButton {
+    align-self: flex-start;
+  }
+
+  .keyboardAndPlayerRow {
+    flex-direction: column;
+  }
+
+  .playerSide {
+    width: 100%;
+  }
+
+  .playerControls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .tempoControl {
+    min-width: 100%;
+  }
+
+  .chordPalette {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  }
+
+  .savedItem {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+}

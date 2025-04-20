@@ -1,0 +1,91 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: light;
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --background: #0a0a0a;
+  --foreground: #ededed;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Import react-circle-of-fifths default styles */
+@import 'react-circle-of-fifths/lib/CircleOfFifths.css';
+
+/* Custom theme for react-circle-of-fifths component - 覆盖默认绿色 */
+/* Light mode - 使用清新的蓝紫色系 */
+:root {
+  --cf-major-keys-fill: #60a5fa !important;
+  --cf-major-keys-fill-hover: #3b82f6 !important;
+  --cf-major-keys-fill-selected: #2563eb !important;
+  --cf-minor-keys-fill: #a78bfa !important;
+  --cf-minor-keys-fill-hover: #8b5cf6 !important;
+  --cf-minor-keys-fill-selected: #7c3aed !important;
+  --cf-diminished-keys-fill: #fb923c !important;
+  
+  --cf-stroke-color: rgba(0, 0, 0, 0.15) !important;
+  --cf-stroke-width: 2px !important;
+  --cf-text-color: #ffffff !important;
+}
+
+/* Dark mode - 使用更鲜艳的霓虹色系 */
+:root[data-theme="dark"],
+.dark {
+  --cf-major-keys-fill: #3b82f6 !important;
+  --cf-major-keys-fill-hover: #60a5fa !important;
+  --cf-major-keys-fill-selected: #93c5fd !important;
+  --cf-minor-keys-fill: #8b5cf6 !important;
+  --cf-minor-keys-fill-hover: #a78bfa !important;
+  --cf-minor-keys-fill-selected: #c4b5fd !important;
+  --cf-diminished-keys-fill: #fb923c !important;
+  
+  --cf-stroke-color: rgba(255, 255, 255, 0.25) !important;
+  --cf-stroke-width: 2px !important;
+  --cf-text-color: #ffffff !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --cf-major-keys-fill: #3b82f6 !important;
+    --cf-major-keys-fill-hover: #60a5fa !important;
+    --cf-major-keys-fill-selected: #93c5fd !important;
+    --cf-minor-keys-fill: #8b5cf6 !important;
+    --cf-minor-keys-fill-hover: #a78bfa !important;
+    --cf-minor-keys-fill-selected: #c4b5fd !important;
+    --cf-diminished-keys-fill: #fb923c !important;
+    
+    --cf-stroke-color: rgba(255, 255, 255, 0.25) !important;
+    --cf-stroke-width: 2px !important;
+    --cf-text-color: #ffffff !important;
+  }
+}

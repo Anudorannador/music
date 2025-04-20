@@ -1,0 +1,396 @@
+/* Container */
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Filters Section */
+.filtersSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--background);
+  border: 1px solid var(--border-color, rgba(0, 0, 0, 0.1));
+  border-radius: 8px;
+}
+
+.filterRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+
+.filterGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+  min-width: 150px;
+}
+
+.filterLabel {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--foreground);
+}
+
+.filterSelect,
+.searchInput {
+  padding: 0.5rem;
+  border: 1px solid var(--border-color, rgba(0, 0, 0, 0.1));
+  border-radius: 4px;
+  background: var(--background);
+  color: var(--foreground);
+  font-size: 0.875rem;
+}
+
+.searchInput {
+  width: 100%;
+}
+
+.filterSelect:focus,
+.searchInput:focus {
+  outline: none;
+  border-color: var(--primary, #0070f3);
+}
+
+.statsText {
+  font-size: 0.875rem;
+  color: var(--foreground-muted, rgba(0, 0, 0, 0.6));
+}
+
+/* Scale List */
+.scalesList {
+  width: 100%;
+}
+
+/* Scale Row */
+.scaleRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: var(--background);
+  border: 1px solid var(--border-color, rgba(0, 0, 0, 0.1));
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 100px;
+  margin-bottom: 0.5rem;
+}
+
+.scaleRow:hover {
+  background: var(--hover-background, rgba(0, 0, 0, 0.02));
+  border-color: var(--border-hover, rgba(0, 0, 0, 0.2));
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.scaleRow:active {
+  transform: translateY(0);
+}
+
+.scaleHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.scaleName {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.scaleActions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.playButton {
+  padding: 0.5rem 1rem;
+  background: var(--primary, #0070f3);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.playButton:hover {
+  background: var(--primary-hover, #0051cc);
+}
+
+.playButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Scale Content */
+.scaleContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Horizontal layout for notation + keyboard */
+.notationKeyboardRow {
+  display: flex;
+  flex-direction: row;
+  /* Top-align panes so staff and keyboard share the same top edge */
+  align-items: flex-start;
+  gap: 1rem;
+  width: 100%;
+}
+
+.notationPane {
+  flex: 0 0 50%;
+  display: flex;
+  flex-direction: column;
+  /* Avoid vertical centering which caused the staff to sit lower than the keyboard */
+  justify-content: flex-start;
+}
+
+.keyboardPane {
+  flex: 1;
+  display: flex;
+  /* Top-align keyboard to match notation */
+  align-items: flex-start;
+  justify-content: center;
+  overflow-x: auto;
+  padding: 0.25rem 0.5rem;
+}
+
+.keyboardPane > div {
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .notationKeyboardRow {
+    flex-direction: column;
+  }
+  .notationPane, .keyboardPane {
+    flex: 1 1 auto;
+  }
+}
+
+.scaleInfo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--info-background, rgba(0, 0, 0, 0.02));
+  border-radius: 4px;
+}
+
+.infoItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.infoLabel {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--foreground-muted, rgba(0, 0, 0, 0.6));
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.infoValue {
+  font-size: 0.875rem;
+  color: var(--foreground);
+}
+
+.notesList {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.note {
+  padding: 0.25rem 0.5rem;
+  background: var(--note-background, rgba(0, 112, 243, 0.1));
+  color: var(--primary, #0070f3);
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+/* Notation Container */
+.notationContainer {
+  width: 100%;
+  overflow-x: auto;
+  padding: 1rem;
+  background: var(--notation-background, white);
+  border-radius: 4px;
+  min-height: 120px;
+  height: 120px;
+}
+
+/* Empty State */
+.emptyState {
+  padding: 4rem 2rem;
+  text-align: center;
+  color: var(--foreground-muted, rgba(0, 0, 0, 0.6));
+}
+
+.emptyStateTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.emptyStateText {
+  font-size: 1rem;
+}
+
+/* Loading State */
+.loading {
+  padding: 2rem;
+  text-align: center;
+  color: var(--foreground-muted, rgba(0, 0, 0, 0.6));
+}
+
+/* Color Toggle Button */
+.colorToggleButton {
+  padding: 0.5rem 1rem;
+  background: rgba(0, 112, 243, 0.1);
+  border: 1px solid rgba(0, 112, 243, 0.3);
+  border-radius: 6px;
+  color: #0070f3;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.colorToggleButton:hover {
+  background: rgba(0, 112, 243, 0.2);
+  border-color: rgba(0, 112, 243, 0.5);
+  transform: translateY(-1px);
+}
+
+.colorToggleButton:active {
+  transform: translateY(0);
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .filtersSection,
+  .scaleRow {
+    border-color: rgba(255, 255, 255, 0.145);
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .scaleRow:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+
+  .scaleInfo {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .notationContainer {
+    background: rgba(255, 255, 255, 0.95);
+  }
+
+  /* Make notation background white for visibility */
+  .notationContainer {
+    background: white;
+  }
+
+  .note {
+    background: rgba(0, 112, 243, 0.3);
+    color: rgb(100, 180, 255);
+  }
+
+  .scaleName {
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .infoLabel {
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .infoValue {
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .filterLabel {
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .statsText {
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .filterSelect,
+  .searchInput {
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.9);
+    border-color: rgba(255, 255, 255, 0.145);
+  }
+
+  .filterSelect:focus,
+  .searchInput:focus {
+    border-color: rgb(100, 180, 255);
+  }
+
+  .emptyStateTitle {
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .emptyStateText {
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .loading {
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .colorToggleButton {
+    background: rgba(100, 180, 255, 0.15);
+    border-color: rgba(100, 180, 255, 0.4);
+    color: rgb(100, 180, 255);
+  }
+
+  .colorToggleButton:hover {
+    background: rgba(100, 180, 255, 0.25);
+    border-color: rgba(100, 180, 255, 0.6);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .filterRow {
+    flex-direction: column;
+  }
+
+  .filterGroup {
+    width: 100%;
+  }
+
+  .scaleHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .scaleActions {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .playButton {
+    flex: 1;
+  }
+}

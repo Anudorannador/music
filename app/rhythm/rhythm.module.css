@@ -1,0 +1,276 @@
+.container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.section {
+  margin-bottom: 48px;
+  padding: 24px;
+  border-radius: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(0, 0, 0, 0.02);
+}
+
+:root[data-theme="dark"] .section {
+  border-color: rgba(255, 255, 255, 0.145);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) .section {
+    border-color: rgba(255, 255, 255, 0.145);
+    background: rgba(255, 255, 255, 0.03);
+  }
+}
+
+.sectionTitle {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  letter-spacing: -0.02em;
+}
+
+.sectionDescription {
+  font-size: 14px;
+  margin-bottom: 24px;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+:root[data-theme="dark"] .sectionDescription {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) .sectionDescription {
+    color: rgba(255, 255, 255, 0.7);
+  }
+}
+
+.patternsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .patternsGrid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 20px;
+  }
+}
+
+.patternCard {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  border: 2px solid rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.patternCard:hover {
+  border-color: rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.patternCard:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.patternCard:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 2px;
+}
+
+/* Keep cards white in dark theme for readable notation */
+:root[data-theme="dark"] .patternCard {
+  background: white;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+:root[data-theme="dark"] .patternCard:hover {
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) .patternCard {
+    background: white;
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+  
+  :root:not([data-theme]) .patternCard:hover {
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+  }
+}
+
+.patternNumber {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  font-size: 18px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.4);
+}
+
+/* Keep pattern number dark on white cards in dark theme */
+:root[data-theme="dark"] .patternNumber {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) .patternNumber {
+    color: rgba(0, 0, 0, 0.4);
+  }
+}
+
+.patternNotation {
+  width: 100%;
+  min-height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  padding: 8px 0;
+  overflow: hidden;
+  background: white;
+  border-radius: 8px;
+}
+
+.patternNotation svg {
+  max-width: 100%;
+  height: auto;
+  min-height: 80px;
+  display: block;
+}
+
+/* Ensure notation stays black on white in dark theme */
+:root[data-theme="dark"] .patternNotation {
+  background: white;
+}
+
+:root[data-theme="dark"] .patternNotation svg {
+  filter: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) .patternNotation {
+    background: white;
+  }
+  
+  :root:not([data-theme]) .patternNotation svg {
+    filter: none;
+  }
+}
+
+/* Hide clef symbols */
+.patternNotation svg [class*="clef"],
+.patternNotation svg [class*="Clef"] {
+  display: none !important;
+}
+
+.patternError {
+  font-size: 12px;
+  color: #dc2626;
+}
+
+.notationContainer {
+  background: white;
+  padding: 32px;
+  border-radius: 12px;
+  overflow-x: auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.2s ease;
+}
+
+.notationContainer:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+:root[data-theme="dark"] .notationContainer {
+  background: #1a1a1a;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+:root[data-theme="dark"] .notationContainer:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) .notationContainer {
+    background: #1a1a1a;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+  
+  :root:not([data-theme]) .notationContainer:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  }
+}
+
+.notationContainer svg {
+  max-width: 100%;
+  height: auto;
+  user-select: none;
+}
+
+.notationContainer [role="button"] {
+  outline: none;
+}
+
+.notationContainer [role="button"]:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+:root[data-theme="dark"] .loading {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) .loading {
+    color: rgba(255, 255, 255, 0.5);
+  }
+}
+
+.error {
+  color: #dc2626;
+  padding: 16px;
+  background: #fef2f2;
+  border-radius: 8px;
+  border: 1px solid #fecaca;
+}
+
+:root[data-theme="dark"] .error {
+  color: #fca5a5;
+  background: #450a0a;
+  border-color: #7f1d1d;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) .error {
+    color: #fca5a5;
+    background: #450a0a;
+    border-color: #7f1d1d;
+  }
+}

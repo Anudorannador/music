@@ -1,0 +1,553 @@
+.main {
+  padding: 2rem;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* gap: 2rem; */
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.header {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.headerAudioPrompt {
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-size: 0.875rem;
+}
+
+/* (reverted any page-level react-piano height overrides) */
+
+:global(.dark) .headerAudioPrompt {
+  background: linear-gradient(135deg, #4c1d95 0%, #5b21b6 100%);
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.4);
+}
+
+.headerStatusContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.title {
+  font-size: 2rem;
+  margin: 0;
+  text-align: center;
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  background-color: #000;
+  color: #fff;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: background-color 0.2s;
+}
+
+.backButton:hover {
+  background-color: #383838;
+}
+
+:global(.dark) .backButton {
+  background-color: #fff;
+  color: #000;
+}
+
+:global(.dark) .backButton:hover {
+  background-color: #ccc;
+}
+
+/* Playing notes staff (only shows currently playing notes) */
+.playingNotesStaffContainer {
+  width: 100%;
+  max-width: 100%;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  min-height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow-x: auto;
+  margin-bottom: 1rem;
+}
+
+:global(.dark) .playingNotesStaffContainer {
+  background-color: #fff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+/* All notes staff (shows all notes with highlights) */
+.allNotesStaffContainer {
+  width: 100%;
+  max-width: 100%;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  min-height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow-x: auto;
+  cursor: pointer;
+  margin-bottom: 1rem;
+}
+
+:global(.dark) .allNotesStaffContainer {
+  background-color: #fff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.musicStaff {
+  width: 100%;
+  height: 100%;
+  min-width: 1248px; /* Match keyboard width */
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.currentNote {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 1rem 0;
+  padding: 0.5rem 1rem;
+  background-color: #e3f2fd;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+:global(.dark) .currentNote {
+  background-color: rgba(125, 211, 252, 0.2);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.12);
+  color: #bae6fd;
+}
+
+/* Controls container */
+.controlsContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  width: 100%;
+  max-width: 1200px;
+  margin: 1rem 0;
+}
+
+/* Instrument selector */
+.instrumentSelector {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #f3f4f6;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+:global(.dark) .instrumentSelector {
+  background-color: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+:global(.dark) .label {
+  color: #e5e7eb;
+}
+
+.select {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border: 2px solid #d1d5db;
+  border-radius: 6px;
+  background-color: #fff;
+  color: #111827;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 200px;
+}
+
+.select:hover:not(:disabled) {
+  border-color: #9ca3af;
+}
+
+.select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+:global(.dark) .select {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #f3f4f6;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+:global(.dark) .select:hover:not(:disabled) {
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+:global(.dark) .select:focus {
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+}
+
+/* Color Toggle Button */
+.colorToggleButton {
+  padding: 0.5rem 1rem;
+  background: rgba(0, 112, 243, 0.1);
+  border: 2px solid rgba(0, 112, 243, 0.3);
+  border-radius: 6px;
+  color: #0070f3;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.colorToggleButton:hover {
+  background: rgba(0, 112, 243, 0.2);
+  border-color: rgba(0, 112, 243, 0.5);
+  transform: translateY(-1px);
+}
+
+.colorToggleButton:active {
+  transform: translateY(0);
+}
+
+:global(.dark) .colorToggleButton {
+  background: rgba(100, 180, 255, 0.15);
+  border-color: rgba(100, 180, 255, 0.4);
+  color: rgb(100, 180, 255);
+}
+
+:global(.dark) .colorToggleButton:hover {
+  background: rgba(100, 180, 255, 0.25);
+  border-color: rgba(100, 180, 255, 0.6);
+}
+
+.stopButton {
+  padding: 0.5rem 1rem;
+  background-color: #dc2626;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stopButton:hover {
+  background-color: #b91c1c;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.stopButton:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+:global(.dark) .stopButton {
+  background-color: #ef4444;
+}
+
+:global(.dark) .stopButton:hover {
+  background-color: #dc2626;
+}
+
+.loading {
+  font-size: 0.875rem;
+  color: #6b7280;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+:global(.dark) .loading {
+  color: #9ca3af;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* MIDI status */
+.statusContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.midiStatus {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.audioWarning {
+  color: #d97706;
+  background-color: #fef3c7;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+:global(.dark) .audioWarning {
+  color: #fbbf24;
+  background-color: rgba(251, 191, 36, 0.2);
+}
+
+/* Audio prompt banner */
+.audioPrompt {
+  flex: 1;
+  text-align: center;
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-size: 1.125rem;
+  font-weight: 600;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  animation: pulse 2s ease-in-out infinite;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.audioPrompt:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.5);
+}
+
+:global(.dark) .audioPrompt {
+  background: linear-gradient(135deg, #4c1d95 0%, #5b21b6 100%);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+}
+
+:global(.dark) .audioPrompt:hover {
+  box-shadow: 0 6px 16px rgba(139, 92, 246, 0.5);
+}
+
+/* Floating draggable display */
+.floatingDisplay {
+  position: fixed;
+  padding: 0.75rem 1.5rem;
+  background: rgba(30, 41, 59, 0.95);
+  color: white;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: move;
+  user-select: none;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(100, 116, 139, 0.3);
+  transition: box-shadow 0.2s, transform 0.1s;
+  z-index: 1000;
+}
+
+.floatingDisplay:hover {
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+  transform: scale(1.02);
+}
+
+.floatingDisplay:active {
+  cursor: grabbing;
+  transform: scale(0.98);
+}
+
+:global(.dark) .floatingDisplay {
+  background: rgba(15, 23, 42, 0.95);
+  border-color: rgba(148, 163, 184, 0.3);
+}
+
+.midiEnabled {
+  color: #059669;
+  background-color: #d1fae5;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+}
+
+:global(.dark) .midiEnabled {
+  color: #6ee7b7;
+  background-color: rgba(16, 185, 129, 0.2);
+}
+
+.midiDisabled {
+  color: #dc2626;
+  background-color: #fee2e2;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+}
+
+:global(.dark) .midiDisabled {
+  color: #fca5a5;
+  background-color: rgba(239, 68, 68, 0.2);
+}
+
+/* Pedal status */
+.pedalStatus {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.pedalDown {
+  color: #059669;
+  background-color: #d1fae5;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  animation: pulse 1s ease-in-out infinite;
+}
+
+:global(.dark) .pedalDown {
+  color: #6ee7b7;
+  background-color: rgba(16, 185, 129, 0.2);
+}
+
+.pedalUp {
+  color: #6b7280;
+  background-color: #f3f4f6;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+}
+
+:global(.dark) .pedalUp {
+  color: #9ca3af;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Instructions for staff interaction */
+.staffInstructions {
+  font-size: 1rem;
+  margin: 1rem 0 0;
+  padding: 0.5rem 1rem;
+  background-color: #fff3e0;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  color: #e65100;
+}
+
+:global(.dark) .staffInstructions {
+  background-color: rgba(251, 191, 36, 0.12);
+  color: #fcd34d;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* Keyboard wrapper for vertical alignment */
+.keyboardWrapper {
+  width: 100%;
+  max-width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow-x: auto;
+  /* Important: keep vertical overflow visible so tall keys/labels aren't clipped */
+  overflow-y: visible;
+  margin: 0 auto 1rem auto;
+}
+
+/* Additional CSS to enforce vertical alignment */
+.keyboardWrapper :global(.whiteKey) {
+  position: relative;
+  transform-origin: center top;
+}
+
+.keyboardWrapper :global(.blackKey) {
+  position: absolute;
+  transform-origin: center top;
+}
+
+/* Avoid vertical clipping from the Keyboard component container (scoped to Sound page) */
+.keyboardWrapper :global([class*="Keyboard_keyboardContainer__"]) {
+  overflow-y: visible !important;
+}
+
+/* Active key highlight */
+.activeKey {
+  background-color: #e3f2fd !important;
+  box-shadow: 0 0 10px rgba(25, 118, 210, 0.7) !important;
+  transform: translateY(2px);
+  transition: all 0.05s ease-in-out;
+}
+
+:global(.dark) .activeKey {
+  background-color: rgba(59, 130, 246, 0.25) !important;
+  box-shadow: 0 0 12px rgba(96, 165, 250, 0.7) !important;
+}
+
+/* Staff guide lines for debugging (can be removed in production) */
+.staffGuideLine {
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  background-color: rgba(0, 0, 255, 0.1);
+  pointer-events: none;
+}
+
+:global(.dark) .staffGuideLine {
+  background-color: rgba(96, 165, 250, 0.15);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1300px) {
+  .staffContainer,
+  .topStaffContainer,
+  .bottomStaffContainer,
+  .keyboardWrapper {
+    overflow-x: auto;
+    width: 100%;
+  }
+}

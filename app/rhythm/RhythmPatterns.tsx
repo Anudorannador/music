@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { OpenSheetMusicDisplay } from 'opensheetmusicdisplay';
-import { DurationValue, TimeSignature } from 'tonal';
+import { DurationValue } from 'tonal';
 import { create } from 'xmlbuilder2';
 import styles from './rhythm.module.css';
 
@@ -52,12 +52,6 @@ function getDurationInfo(duration: number) {
     throw new Error(`Unsupported duration: ${duration}`);
   }
   return DurationValue.get(tonalName);
-}
-
-// Helper to validate time signature
-function getTimeSignatureInfo(beats: number, beatType: number) {
-  const tsInfo = TimeSignature.get([beats, beatType]);
-  return tsInfo;
 }
 
 // Play a percussion click sound with different instrument timbres
@@ -160,8 +154,7 @@ function playClick(time: number = 0, instrument: Instrument = 'drums') {
       harmonic3.stop(ctx.currentTime + time + 0.6);
       break;
     }
-  } catch (err) {
-    console.error('Error playing click sound:', err);
+  } catch {
   }
 }
 
@@ -285,17 +278,10 @@ function buildSinglePatternMusicXML(pattern: number[], timeBeats: number, beatTy
   
   // Validate time signature using Tonal
   // This helps identify if it's simple, compound, irregular, etc.
-  const tsInfo = getTimeSignatureInfo(timeBeats, beatType);
-  // Future enhancement: use tsInfo.type to adjust rendering or validation
-  // tsInfo.type can be: 'simple', 'compound', 'regular', 'irregular', 'irrational'
+  // Future enhancement: use time signature type to adjust rendering or validation
   
   const totalDuration = pattern.reduce((sum, dur) => sum + dur, 0);
   const beatsInMeasure = Math.ceil(totalDuration / divisions);
-
-  // Log time signature info for debugging (can be removed in production)
-  if (tsInfo && !tsInfo.empty) {
-    console.debug(`Time signature ${tsInfo.name} is ${tsInfo.type}`);
-  }
 
   // Build the MusicXML document
   const doc = create({ version: '1.0', encoding: 'UTF-8', standalone: false })
@@ -431,8 +417,7 @@ function PatternDisplay({ pattern, index, displayIndex, timeBeats, beatType, tem
           }
         }
       })
-      .catch((err) => {
-        console.error(`Failed to render pattern ${index + 1}:`, err);
+      .catch(() => {
         setError('Failed to render');
       });
   }, [pattern, index, timeBeats, beatType]);

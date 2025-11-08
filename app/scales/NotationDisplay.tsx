@@ -114,8 +114,7 @@ function NotationDisplay({
               }
             }
           })
-          .catch((err) => {
-            console.error('Failed to render scale notation:', err);
+          .catch(() => {
           });
       }
     };
@@ -187,9 +186,8 @@ function NotationDisplay({
           g.style.opacity = '1';
         });
       }
-    } catch (error) {
+    } catch {
       // Silently handle errors
-      console.error('Error updating note opacity:', error);
     }
   }, [currentNoteIndex]);
 

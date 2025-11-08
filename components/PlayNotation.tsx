@@ -75,8 +75,7 @@ function PlayNotation({
             }
           }
         })
-        .catch((err) => {
-          console.error('Failed to render notation:', err);
+        .catch(() => {
         });
     };
 
@@ -123,8 +122,7 @@ function PlayNotation({
           g.style.opacity = '1';
         });
       }
-    } catch (error) {
-      console.error('Error updating note opacity:', error);
+    } catch {
     }
   }, [currentNoteIndex]);
 

@@ -160,8 +160,7 @@ export default function KeyNotation({ keyInfo, useColors = false }: KeyNotationP
             }
           }
         })
-        .catch((err) => {
-          console.error('Failed to render key notation:', err);
+        .catch(() => {
         });
     }
 

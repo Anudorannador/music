@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import RhythmPatterns, { type Instrument } from './RhythmPatterns';
-import { getCommonTimeSignatures } from './rhythmUtils';
 
 const TEMPO_OPTIONS = [
   { value: 'Largo', label: 'Largo', bpm: 45 },
@@ -28,8 +27,6 @@ export default function RhythmPage() {
 
   // Log time signature analysis on mount (for debugging/educational purposes)
   useEffect(() => {
-    const timeSignatures = getCommonTimeSignatures();
-    console.log('🎵 Time Signatures Analysis (using Tonal library):', timeSignatures);
   }, []);
 
   return (

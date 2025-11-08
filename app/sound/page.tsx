@@ -220,6 +220,7 @@ const OSMD_CONFIG = {
   drawingParameters: 'compact',
   followCursor: true,
   disableCursor: false,
+  logLevel: 'error', // Only show error logs from OSMD
 };
 
 // Chord detection utilities
@@ -377,8 +378,6 @@ export default function Sound() {
   useEffect(() => {
     const initInstruments = async () => {
       setIsLoading(true);
-      console.log('Starting instrument initialization...');
-      console.log('Creating instruments...');
       
       try {
         
@@ -463,7 +462,6 @@ export default function Sound() {
         steinway.chain(steinwayEq, steinwayCompressor, steinwayChorus, steinwayWidener, steinwayReverb);
         
         steinwayRef.current = steinway;
-        console.log('Steinway Model D Concert Grand Piano synthesizer created');
 
         // Create simple Grand Piano sound
         const piano = new Tone.PolySynth(Tone.Synth, {
@@ -478,7 +476,6 @@ export default function Sound() {
           },
         }).toDestination();
         pianoRef.current = piano;
-        console.log('Grand Piano synthesizer created');
 
         // Electric Piano (FM synthesis for Rhodes-like sound)
         const electricPiano = new Tone.FMSynth({
@@ -563,15 +560,12 @@ export default function Sound() {
         }).toDestination();
         organRef.current = organ;
 
-        console.log('✓ All instruments created successfully');
         setIsLoading(false);
-      } catch (error) {
-        console.error('❌ Error initializing instruments:', error);
+      } catch {
         setIsLoading(false);
       }
     };
 
-    console.log('Calling initInstruments()...');
     initInstruments();
 
     return () => {
@@ -606,9 +600,7 @@ export default function Sound() {
         try {
           await Tone.start();
           setAudioContextReady(true);
-          console.log('✓ Audio context started');
         } catch {
-          console.log('Audio context will start on first interaction');
         }
       }
     };
@@ -634,14 +626,11 @@ export default function Sound() {
       const midiTimestamp = timestamp ?? performance.now();
       const noteFormat = `${note}${octave}`;
       
-      console.log(`[MIDI] ${noteFormat}, T: ${midiTimestamp.toFixed(2)}ms`);
-      
       // Ensure Tone.js context is started
       if (Tone.getContext().state !== 'running') {
         try {
           await Tone.start();
-        } catch (error) {
-          console.error('Failed to start audio context:', error);
+        } catch {
           return;
         }
       }
@@ -673,13 +662,11 @@ export default function Sound() {
       }
       
       if (!currentSynthRef?.current) {
-        console.error('Synth ref is null!');
         return;
       }
       
       // Check if synth is disposed before using it
       if (currentSynthRef.current.disposed) {
-        console.error('Synth was already disposed!');
         return;
       }
       
@@ -697,14 +684,11 @@ export default function Sound() {
       if (firstNoteAudioTimeRef.current === null) {
         firstNoteAudioTimeRef.current = audioNow;
         firstNoteMidiTimeRef.current = midiTimestamp;
-        console.log(`[FIRST] ${noteFormat}, audioContext.currentTime: ${audioNow.toFixed(6)}s`);
       }
       
       // Calculate delay based on MIDI timestamp difference
       const midiDelay = (midiTimestamp - (firstNoteMidiTimeRef.current || 0)) / 1000;
       const scheduleTime = (firstNoteAudioTimeRef.current || audioNow) + midiDelay;
-      
-      console.log(`[PLAY] ${noteFormat}, midiDelay: +${(midiDelay * 1000).toFixed(2)}ms, schedule: ${scheduleTime.toFixed(6)}s`);
       
       // Use audio context's precise scheduling
       currentSynthRef.current.triggerAttack(noteFormat, scheduleTime, velocity);
@@ -716,7 +700,6 @@ export default function Sound() {
   const releaseNote = useCallback(
     (note: string, octave: number) => {
       const noteFormat = `${note}${octave}`;
-      console.log(`releaseNote called: ${noteFormat}, instrument: ${selectedInstrument}`);
 
       switch (selectedInstrument) {
         case 'steinway':
@@ -762,16 +745,12 @@ export default function Sound() {
   // Handle keyboard key down (attack)
   const handleKeyDown = useCallback(
     (note: string, octave: number, velocity = 0.8, timestamp?: number) => {
-      console.log('handleKeyDown called:', note, octave, velocity, timestamp);
       const noteId = `${note}${octave}`;
       
       // Check immediately using ref to avoid batching issues
       if (activeNotesRef.current.has(noteId)) {
-        console.log('Note already playing (checked via ref):', noteId);
         return;
       }
-      
-      console.log('Playing note:', noteId);
       
       // 1. IMMEDIATELY play sound (don't wait for state), pass timestamp
       playNote(note, octave, velocity, timestamp);
@@ -793,17 +772,13 @@ export default function Sound() {
     (note: string, octave: number) => {
       const noteId = `${note}${octave}`;
       
-      console.log('handleKeyUp called:', noteId);
-      
       // 1. IMMEDIATELY handle sound (check pedal state from ref)
       if (sustainPedalDownRef.current) {
         // Add to sustained notes instead of releasing immediately
         sustainedNotesRef.current.add(noteId);
-        console.log('Note sustained:', noteId);
       } else {
         // Release the note immediately
         releaseNote(note, octave);
-        console.log('Note released:', noteId);
       }
       
       // 2. Update ref immediately
@@ -864,9 +839,6 @@ export default function Sound() {
 
   // Clear all notes when instrument changes
   useEffect(() => {
-    console.log('Instrument changed to:', selectedInstrument);
-    console.log('Clearing all active notes');
-    
     // Clear refs immediately
     activeNotesRef.current.clear();
     sustainPedalDownRef.current = false;
@@ -901,8 +873,8 @@ export default function Sound() {
         .then(() => {
           playingNotesOsmdInstance.current?.render();
         })
-        .catch((error) => {
-          console.error('Error rendering playing notes staff:', error);
+        .catch(() => {
+          setIsLoading(false);
         });
     }
 
@@ -914,8 +886,7 @@ export default function Sound() {
         .then(() => {
           allNotesOsmdInstance.current?.render();
         })
-        .catch((error) => {
-          console.error('Error rendering all notes staff:', error);
+        .catch(() => {
         });
     }
   }, [activeNotes, useColors]);
@@ -928,33 +899,30 @@ export default function Sound() {
       try {
         // Check if already enabled
         if (WebMidi.enabled) {
-          console.log('WebMidi already enabled, skipping initialization');
           setMidiEnabled(true);
           return;
         }
 
         // WebMidi v3 uses Promise-based API
-        await WebMidi.enable();
+        await WebMidi.enable({
+          sysex: false,
+          software: false,
+        });
         
         if (!isMounted) return;
         
-        console.log('WebMidi enabled!');
         setMidiEnabled(true);
 
         // Check if there are any MIDI inputs available
         if (!WebMidi.inputs || WebMidi.inputs.length === 0) {
-          console.log('No MIDI inputs found');
           return;
         }
 
         // Listen to all MIDI inputs
         WebMidi.inputs.forEach((input: any) => {
           if (!input) {
-            console.warn('Invalid MIDI input detected, skipping:', input);
             return;
           }
-
-          console.log(`MIDI Input: ${input.name}`);
 
           // WebMidi v3 uses channels - listen to all channels (1-16)
           // Or use input.addForwarder() for forwarding events
@@ -968,7 +936,6 @@ export default function Sound() {
                 // Parse the note and octave from identifier
                 const match = fullNote.match(/^([A-G][#b]?)(-?\d+)$/);
                 if (!match) {
-                  console.error('Failed to parse MIDI note:', fullNote);
                   return;
                 }
                 const noteName = match[1]; // e.g., "C#"
@@ -980,17 +947,13 @@ export default function Sound() {
                 
                 // Some MIDI keyboards send velocity 0 as note-off instead of noteoff event
                 if (velocity === 0 || e.rawVelocity === 0) {
-                  console.log(`MIDI Note On with velocity 0 (treating as Note Off): ${fullNote}`);
                   handleKeyUp(noteName, octave);
                   return;
                 }
                 
-                console.log(`MIDI Note On: ${fullNote}, noteName: "${noteName}", octave: ${octave}, velocity: ${velocity}, timestamp: ${timestamp}`);
-                
                 // Handle key down with velocity and timestamp
                 handleKeyDown(noteName, octave, velocity, timestamp);
-              } catch (error) {
-                console.error('Error in noteon handler:', error);
+              } catch {
               }
             });
 
@@ -1001,17 +964,14 @@ export default function Sound() {
                 // Parse the note and octave from identifier
                 const match = fullNote.match(/^([A-G][#b]?)(-?\d+)$/);
                 if (!match) {
-                  console.error('Failed to parse MIDI note:', fullNote);
                   return;
                 }
                 const noteName = match[1]; // e.g., "C#"
                 const octave = parseInt(match[2], 10); // e.g., 4
-                console.log(`MIDI Note Off: ${fullNote}, noteName: "${noteName}", octave: ${octave}`);
                 
                 // Handle key up
                 handleKeyUp(noteName, octave);
-              } catch (error) {
-                console.error('Error in noteoff handler:', error);
+              } catch {
               }
             });
 
@@ -1024,7 +984,6 @@ export default function Sound() {
                   // Use e.rawValue for the actual MIDI value, or convert normalized value
                   const rawValue = e.message?.data?.[2] ?? Math.round(e.value * 127);
                   const isDown = rawValue >= 64; // MIDI CC value >= 64 means pedal down
-                  console.log(`Sustain pedal: ${isDown ? 'DOWN' : 'UP'}, raw value: ${rawValue}`);
                   
                   // Update ref immediately for instant access
                   const prevState = sustainPedalDownRef.current;
@@ -1032,7 +991,6 @@ export default function Sound() {
                   
                   // When pedal is released, release all sustained notes
                   if (prevState && !isDown) {
-                    console.log(`Releasing ${sustainedNotesRef.current.size} sustained notes`);
                     sustainedNotesRef.current.forEach((noteId) => {
                       const match = noteId.match(/^([A-G]#?)(\d+)$/);
                       if (match) {
@@ -1046,14 +1004,12 @@ export default function Sound() {
                   // Update state for UI
                   setSustainPedalDown(isDown);
                 }
-              } catch (error) {
-                console.error('Error in controlchange handler:', error);
+              } catch {
               }
             });
           });
         });
-      } catch (error) {
-        console.error('WebMidi initialization error:', error);
+      } catch {
         if (isMounted) {
           setMidiEnabled(false);
         }
@@ -1096,8 +1052,7 @@ export default function Sound() {
         .then(() => {
           playingNotesOsmdInstance.current?.render();
         })
-        .catch((error) => {
-          console.error('Error loading playing notes MusicXML:', error);
+        .catch(() => {
         });
     }
 
@@ -1121,7 +1076,6 @@ export default function Sound() {
 
             staffElement.addEventListener('click', (event) => {
               const clickedElement = event.target as HTMLElement;
-              console.log(event.target);
               const noteElement = findNoteElement(clickedElement);
 
               if (noteElement) {
@@ -1139,8 +1093,7 @@ export default function Sound() {
             });
           }
         })
-        .catch((error) => {
-          console.error('Error loading all notes MusicXML:', error);
+        .catch(() => {
         });
     }
 
@@ -1156,9 +1109,6 @@ export default function Sound() {
     // Check if we're clicking directly on a note or a note container
     let current = element;
 
-    // Log the clicked element for debugging
-    console.log('Clicked element:', current.tagName, current.className);
-
     // If we click on an SVG element, traverse up to find the note container
     if (
       current.tagName.toLowerCase() === 'path' ||
@@ -1168,9 +1118,6 @@ export default function Sound() {
     ) {
       // Check if it's part of a note (common OSMD/VexFlow note structure)
       while (current && current !== allNotesStaffRef.current) {
-        // Log element hierarchy
-        console.log('Traversing element:', current.tagName, current.className);
-
         // Check for common OSMD/VexFlow note classes
         // Handle SVG classList objects and regular strings
         const getClassValue = (elem: HTMLElement): string => {
@@ -1190,7 +1137,6 @@ export default function Sound() {
         };
 
         if (hasClass('vf-note') || hasClass('vf-notehead') || hasClass('vf-stavenote')) {
-          console.log('Found note element:', current);
           return current;
         }
 
@@ -1200,7 +1146,6 @@ export default function Sound() {
           current.hasAttribute('data-measure') ||
           current.hasAttribute('data-note')
         ) {
-          console.log('Found OSMD note element with data attributes:', current);
           return current;
         }
 
@@ -1217,19 +1162,15 @@ export default function Sound() {
         current.closest('.note');
 
       if (pitchElement) {
-        console.log('Found pitch element:', pitchElement);
         return pitchElement as HTMLElement;
       }
     }
 
-    console.log('No note element found');
     return null;
   };
 
   // Helper function to extract note information from a note element
   const extractNoteInfo = (noteElement: HTMLElement): { note: string; octave: number } | null => {
-    console.log('Extracting note info from:', noteElement);
-
     // Get coordinates of the clicked element
     const rect = noteElement.getBoundingClientRect();
     const staffRect = allNotesStaffRef.current?.getBoundingClientRect();
@@ -1243,8 +1184,6 @@ export default function Sound() {
       const staffWidth = staffRect.width;
       const positionRatio = xPosition / staffWidth;
 
-      console.log('Click position ratio:', positionRatio);
-
       // Define our 88-key piano range (A0 to C8)
       const allNotes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
       const totalKeys = 88;
@@ -1252,8 +1191,6 @@ export default function Sound() {
       // Map the position ratio directly to a key index (0-87)
       const keyIndex = Math.floor(positionRatio * totalKeys);
       const boundedIndex = Math.max(0, Math.min(keyIndex, totalKeys - 1));
-
-      console.log('Key index:', keyIndex, 'Bounded index:', boundedIndex);
 
       // The piano range starts with A0, then A#0, B0, then C1 through B1, etc.
       // We need to map the index (0-87) to the correct note and octave
@@ -1301,12 +1238,10 @@ export default function Sound() {
       const noteInfo = fullRange[boundedIndex];
 
       if (noteInfo) {
-        console.log('Found note by direct mapping:', noteInfo);
         return noteInfo;
       }
     }
 
-    console.log('Could not determine note information from element:', noteElement);
     return null;
     return null;
   };

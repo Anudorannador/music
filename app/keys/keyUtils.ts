@@ -54,8 +54,7 @@ export function getKeyInfo(keyName: string): KeyInfo | null {
       intervals: keyData.intervals,
       minorRelative: keyData.minorRelative,
     };
-  } catch (error) {
-    console.error('Error getting key info:', error);
+  } catch {
     return null;
   }
 }
@@ -98,8 +97,7 @@ export function getMinorKeyInfo(keyName: string): KeyInfo | null {
       intervals: keyData.natural.intervals,
       relativeMajor: keyData.relativeMajor,
     };
-  } catch (error) {
-    console.error('Error getting minor key info:', error);
+  } catch {
     return null;
   }
 }

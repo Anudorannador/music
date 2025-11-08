@@ -25,8 +25,7 @@ export default function ProgressionBuilder({ selectedKey, mode }: ProgressionBui
       if (saved) {
         setSavedProgressions(JSON.parse(saved));
       }
-    } catch (error) {
-      console.error('Error loading saved progressions:', error);
+    } catch {
     }
   }, []);
 

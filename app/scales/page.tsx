@@ -27,8 +27,7 @@ export default function ScalesPage() {
     try {
       const scales = getAllScales();
       setAllScales(scales);
-    } catch (error) {
-      console.error('Error loading scales:', error);
+    } catch {
     } finally {
       setIsLoading(false);
     }

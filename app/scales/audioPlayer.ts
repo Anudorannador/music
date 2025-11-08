@@ -92,11 +92,9 @@ class ScaleAudioPlayer {
         this.clearTimeouts();
         onComplete?.();
       }, notesToPlay.length * noteDuration * 1000 + 200);
-
       this.currentTimeoutIds.push(completeTimeoutId);
 
-    } catch (error) {
-      console.error('Failed to play scale:', error);
+    } catch {
       this.isPlaying = false;
       this.clearTimeouts();
       onComplete?.();

@@ -165,7 +165,6 @@ export function getNoteColor(
   const baseColor = BASE_NOTE_COLORS[normalizedNote];
 
   if (!baseColor) {
-    console.warn(`Unknown note name: ${noteName}`);
     return '#888888'; // Gray fallback
   }
 
@@ -245,7 +244,6 @@ export function getColorFromNoteString(
 ): string {
   const parsed = parseNoteString(noteString);
   if (!parsed) {
-    console.warn(`Invalid note string: ${noteString}`);
     return '#888888';
   }
 

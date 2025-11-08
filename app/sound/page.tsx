@@ -10,6 +10,7 @@ import { WebMidi } from 'webmidi';
 import { create } from 'xmlbuilder2';
 import Keyboard from '../../components/Keyboard/Keyboard';
 import { getNoteColor } from '../lib/noteColors';
+import { MidiInputManager, ChordEvent } from '../../lib/midiInputManager';
 import styles from './sound.module.css';
 
 // Add type declaration for WebKit audio context
@@ -209,6 +210,14 @@ const generateStaffWithNotes = (
   return doc.end({ prettyPrint: true });
 };
 
+// Helper for formatting MIDI to note strings for display
+const SEMITONE_TO_NOTE: string[] = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+const midiToNote = (midi: number): { note: string; octave: number; id: string } => {
+  const pc = ((midi % 12) + 12) % 12;
+  const octave = Math.floor(midi / 12) - 1;
+  const note = SEMITONE_TO_NOTE[pc];
+  return { note, octave, id: `${note}${octave}` };
+};
 // OSMD configuration object (pure data)
 const OSMD_CONFIG = {
   autoResize: true,
@@ -223,99 +232,6 @@ const OSMD_CONFIG = {
   logLevel: 'error', // Only show error logs from OSMD
 };
 
-// Chord detection utilities
-const NOTE_TO_SEMITONE: Record<string, number> = {
-  'C': 0, 'C#': 1, 'Db': 1, 'D': 2, 'D#': 3, 'Eb': 3,
-  'E': 4, 'F': 5, 'F#': 6, 'Gb': 6, 'G': 7, 'G#': 8,
-  'Ab': 8, 'A': 9, 'A#': 10, 'Bb': 10, 'B': 11
-};
-
-const SEMITONE_TO_NOTE: string[] = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-
-// Chord patterns: [intervals from root]
-const CHORD_PATTERNS: Record<string, number[]> = {
-  'Major': [0, 4, 7],
-  'Minor': [0, 3, 7],
-  'Diminished': [0, 3, 6],
-  'Augmented': [0, 4, 8],
-  'Major 7': [0, 4, 7, 11],
-  'Minor 7': [0, 3, 7, 10],
-  'Dominant 7': [0, 4, 7, 10],
-  'Diminished 7': [0, 3, 6, 9],
-  'Half-Diminished 7': [0, 3, 6, 10],
-  'Major 6': [0, 4, 7, 9],
-  'Minor 6': [0, 3, 7, 9],
-  'Sus2': [0, 2, 7],
-  'Sus4': [0, 5, 7],
-  '7Sus4': [0, 5, 7, 10],
-  'Add9': [0, 4, 7, 14],
-  'Minor Add9': [0, 3, 7, 14],
-  'Major 9': [0, 4, 7, 11, 14],
-  'Minor 9': [0, 3, 7, 10, 14],
-  'Dominant 9': [0, 4, 7, 10, 14],
-  '6/9': [0, 4, 7, 9, 14],
-};
-
-function parseNoteId(noteId: string): { note: string; octave: number } | null {
-  const match = noteId.match(/^([A-G][#b]?)(\d+)$/);
-  if (!match) return null;
-  return { note: match[1], octave: parseInt(match[2], 10) };
-}
-
-function normalizeIntervals(intervals: number[]): number[] {
-  // Sort and remove duplicates
-  const unique = Array.from(new Set(intervals)).sort((a, b) => a - b);
-  // Normalize to start from 0
-  const min = unique[0];
-  return unique.map(i => (i - min + 12) % 12);
-}
-
-function detectChordFromNotes(noteIds: Set<string>): { root: string; quality: string } | null {
-  if (noteIds.size < 2) return null;
-
-  const parsed = Array.from(noteIds)
-    .map(parseNoteId)
-    .filter((n): n is { note: string; octave: number } => n !== null);
-
-  if (parsed.length < 2) return null;
-
-  // Convert to semitones (absolute pitch values)
-  const semitones = parsed.map(({ note, octave }) => {
-    const noteSemitone = NOTE_TO_SEMITONE[note];
-    return noteSemitone + (octave + 1) * 12;
-  });
-
-  // Try each note as potential root
-  for (let i = 0; i < semitones.length; i++) {
-    const root = semitones[i];
-    const intervals = normalizeIntervals(semitones.map(s => s - root));
-
-    // Match against chord patterns
-    for (const [quality, pattern] of Object.entries(CHORD_PATTERNS)) {
-      if (pattern.length !== intervals.length) continue;
-      
-      const matches = pattern.every(p => intervals.includes(p % 12));
-      if (matches) {
-        const rootNote = SEMITONE_TO_NOTE[root % 12];
-        return { root: rootNote, quality };
-      }
-    }
-  }
-
-  return null;
-}
-
-function formatPlayingNotes(noteIds: Set<string>, chord: { root: string; quality: string } | null): string {
-  if (noteIds.size === 0) return '';
-  
-  const sortedNotes = Array.from(noteIds).sort();
-  
-  if (chord) {
-    return `${chord.root} ${chord.quality}`;
-  }
-  
-  return sortedNotes.join(', ');
-}
 
 // Main component using functional approach
 export default function Sound() {
@@ -333,6 +249,7 @@ export default function Sound() {
   const [sustainPedalDown, setSustainPedalDown] = useState(false);
   const [activeNotes, setActiveNotes] = useState<Set<string>>(new Set());
   const [displayNotes, setDisplayNotes] = useState<string>('');
+  const midiMgrRef = useRef<MidiInputManager | null>(null);
   const [audioContextReady, setAudioContextReady] = useState(false);
   const [useColors, setUseColors] = useState(true); // Color mode - default ON
   
@@ -830,12 +747,21 @@ export default function Sound() {
     }
   }, [isDragging, handleMouseMove, handleMouseUp]);
 
-  // Detect and update chord display whenever active notes change
+  // Init MidiInputManager and subscribe to chord events (for display + grouping awareness)
   useEffect(() => {
-    const chord = detectChordFromNotes(activeNotes);
-    const displayText = formatPlayingNotes(activeNotes, chord);
-    setDisplayNotes(displayText);
-  }, [activeNotes]);
+    const mgr = new MidiInputManager();
+    midiMgrRef.current = mgr;
+    const offChord = mgr.onChord((evt: ChordEvent) => {
+      if (evt.name) {
+        setDisplayNotes(evt.name);
+      } else if (evt.notes.length) {
+        setDisplayNotes(evt.notes.map(midiToNote).map(n => n.id).join(', '));
+      } else {
+        setDisplayNotes('');
+      }
+    });
+    return () => { offChord(); mgr.dispose(); midiMgrRef.current = null; };
+  }, []);
 
   // Clear all notes when instrument changes
   useEffect(() => {
@@ -944,6 +870,8 @@ export default function Sound() {
                 const velocity = e.note.attack || e.rawVelocity / 127 || 0.8;
                 // Get MIDI event timestamp
                 const timestamp = e.timestamp;
+                // Feed MidiInputManager with raw MIDI values for grouping
+                midiMgrRef.current?.handleNoteOn(e.note.number, Math.max(0, Math.min(127, e.rawVelocity ?? Math.round(velocity * 127))));
                 
                 // Some MIDI keyboards send velocity 0 as note-off instead of noteoff event
                 if (velocity === 0 || e.rawVelocity === 0) {
@@ -968,6 +896,8 @@ export default function Sound() {
                 }
                 const noteName = match[1]; // e.g., "C#"
                 const octave = parseInt(match[2], 10); // e.g., 4
+                // Forward to MidiInputManager
+                midiMgrRef.current?.handleNoteOff(e.note.number);
                 
                 // Handle key up
                 handleKeyUp(noteName, octave);
@@ -984,6 +914,8 @@ export default function Sound() {
                   // Use e.rawValue for the actual MIDI value, or convert normalized value
                   const rawValue = e.message?.data?.[2] ?? Math.round(e.value * 127);
                   const isDown = rawValue >= 64; // MIDI CC value >= 64 means pedal down
+                  // Forward to MidiInputManager
+                  midiMgrRef.current?.handleControlChange(64, rawValue);
                   
                   // Update ref immediately for instant access
                   const prevState = sustainPedalDownRef.current;

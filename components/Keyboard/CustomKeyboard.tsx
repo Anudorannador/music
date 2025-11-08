@@ -3,7 +3,7 @@
 import React, { forwardRef, useEffect, useRef, useImperativeHandle, useMemo } from 'react';
 import { Piano } from 'react-piano';
 import 'react-piano/dist/styles.css';
-import { getNoteColor, NoteColorOptions } from '../../app/lib/noteColors';
+import { getNoteColor, NoteColorOptions } from '@lib/noteColors';
 
 interface ActiveNoteConfig {
   showLabel?: boolean;

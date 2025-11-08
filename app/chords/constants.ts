@@ -9,7 +9,7 @@ export {
   parseNoteString,
   getColorFromNoteString,
   type NoteColorOptions
-} from '../lib/noteColors';
+} from '@lib/noteColors';
 
 // Keyboard display limits
 export const MIN_DISPLAYABLE_OCTAVE = 1;

@@ -2,7 +2,7 @@
 import { useEffect, useRef } from 'react';
 import { OpenSheetMusicDisplay } from 'opensheetmusicdisplay';
 import { create } from 'xmlbuilder2';
-import { getNoteColor } from '../lib/noteColors';
+import { getNoteColor } from '@lib/noteColors';
 import type { KeyInfo } from './keyUtils';
 import styles from './keys.module.css';
 

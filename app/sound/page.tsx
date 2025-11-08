@@ -7,10 +7,11 @@ import { OpenSheetMusicDisplay } from 'opensheetmusicdisplay';
 import Link from 'next/link';
 import * as Tone from 'tone';
 import { WebMidi } from 'webmidi';
-import { create } from 'xmlbuilder2';
+// MusicXML generation centralized in musicXmlBuilder.ts
+import { generateMusicXML } from './musicXmlBuilder';
 import Keyboard from '../../components/Keyboard/Keyboard';
-import { getNoteColor } from '../lib/noteColors';
-import { MidiInputManager, ChordEvent } from '../../lib/midiInputManager';
+import { getNoteColor } from '@lib/noteColors';
+import { MidiInputManager, ChordEvent } from '@lib/midiInputManager';
 import styles from './sound.module.css';
 
 // Add type declaration for WebKit audio context
@@ -34,180 +35,19 @@ const INSTRUMENTS = {
   organ: { name: 'Electric Organ', icon: '🎹' },
 } as const;
 
-// MusicXML generation using xmlbuilder2
+// Adapter around centralized builder (deprecated manual generation removed)
 const generateStaffWithNotes = (
-  activeNote: string | null,
-  activeOctave: number | null,
+  _activeNote: string | null,
+  _activeOctave: number | null,
   showAllNotes: boolean = true,
   activeNotesSet: Set<string> = new Set(),
   useColors: boolean = true
-): string => {
-  const notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-
-  // Parse active notes set to check if a note is active
-  const isNoteActive = (note: string, octave: number): boolean => {
-    const noteId = `${note}${octave}`;
-    return activeNotesSet.has(noteId);
-  };
-
-  // Helper function to determine colors based on context
-  const getColors = (note: string, octave: number, isActive: boolean): { stem: string; notehead: string } => {
-    let stemColor: string;
-    let noteheadColor: string;
-    
-    if (useColors) {
-      // Color ON mode
-      if (showAllNotes) {
-        // All notes view: active notes are BLACK, inactive notes use octave colors
-        if (isActive) {
-          stemColor = '#000000';
-          noteheadColor = '#000000';
-        } else {
-          const color = getNoteColor(note, octave);
-          stemColor = color;
-          noteheadColor = color;
-        }
-      } else {
-        // Only playing notes view: active=octave color, inactive=WHITE (invisible placeholder)
-        if (isActive) {
-          const color = getNoteColor(note, octave);
-          stemColor = color;
-          noteheadColor = color;
-        } else {
-          stemColor = '#FFFFFF';
-          noteheadColor = '#FFFFFF';
-        }
-      }
-    } else {
-      // Color OFF mode
-      if (showAllNotes) {
-        // All notes view: stem is blue when active, black otherwise; notehead is always black (invisible when inactive)
-        stemColor = isActive ? '#0052cc' : '#000000';
-        noteheadColor = isActive ? '#0052cc' : '#000000';
-      } else {
-        // Only playing notes view: active=black, inactive=white
-        const color = isActive ? '#000000' : '#FFFFFF';
-        stemColor = color;
-        noteheadColor = color;
-      }
-    }
-
-    return { stem: stemColor, notehead: noteheadColor };
-  };
-
-  // Build the full MusicXML document
-  const beatValue = !showAllNotes ? 89 : 88;
-  
-  const doc = create({ version: '1.0', encoding: 'UTF-8', standalone: false })
-    .dtd({
-      pubID: '-//Recordare//DTD MusicXML 4.0 Partwise//EN',
-      sysID: 'http://www.musicxml.org/dtds/partwise.dtd'
-    })
-    .ele('score-partwise', { version: '4.0' })
-    .ele('part-list')
-    .ele('score-part', { id: 'P1' })
-    .ele('part-name').txt('Music').up()
-    .up()
-    .up()
-    .ele('part', { id: 'P1' })
-    .ele('measure', { number: '1', width: '1600' })
-    .ele('attributes')
-    .ele('divisions').txt('1').up()
-    .ele('key')
-    .ele('fifths').txt('0').up()
-    .up()
-    .ele('time')
-    .ele('beats').txt(String(beatValue)).up()
-    .ele('beat-type').txt('4').up()
-    .up()
-    .ele('staves').txt('2').up()
-    .ele('clef', { number: '1' })
-    .ele('sign').txt('G').up()
-    .ele('line').txt('2').up()
-    .up()
-    .ele('clef', { number: '2' })
-    .ele('sign').txt('F').up()
-    .ele('line').txt('4').up()
-    .up()
-    .up();
-
-  // Add notes
-  let currentMeasure = doc;
-  
-  [0, 1, 2, 3, 4, 5, 6, 7, 8].forEach((octave) => {
-    let notesToAdd: string[] = [];
-    if (octave === 0) {
-      notesToAdd = ['A', 'B'];
-    } else if (octave === 8) {
-      notesToAdd = ['C'];
-    } else {
-      notesToAdd = notes;
-    }
-
-    notesToAdd.forEach((note) => {
-      const isActive = isNoteActive(note, octave);
-      const isSharp = note.includes('#');
-      const baseNote = note.charAt(0);
-      const alter = isSharp ? 1 : 0;
-      const staffNumber = octave < 4 ? '2' : '1';
-      const colors = getColors(note, octave, isActive);
-
-      // Create note element with optional color attribute
-      const noteAttrs: Record<string, string> = {};
-      if (isSharp) noteAttrs.color = colors.stem;
-      
-      let noteEle = currentMeasure.ele('note', noteAttrs);
-      
-      // Add pitch
-      noteEle = noteEle.ele('pitch')
-        .ele('step').txt(baseNote).up();
-      if (isSharp) {
-        noteEle = noteEle.ele('alter').txt(String(alter)).up();
-      }
-      noteEle = noteEle.ele('octave').txt(String(octave)).up().up();
-      
-      // Add duration and type
-      noteEle = noteEle.ele('duration').txt('1').up()
-        .ele('type').txt('quarter').up();
-      
-      // Add accidental if sharp
-      if (isSharp) {
-        noteEle = noteEle.ele('accidental').txt('sharp').up();
-      }
-      
-      // Add staff
-      noteEle = noteEle.ele('staff').txt(staffNumber).up();
-      
-      // Add stem with color
-      noteEle = noteEle.ele('stem', { color: colors.stem }).txt('up').up();
-      
-      // Add notehead with color
-      noteEle = noteEle.ele('notehead', { color: colors.notehead }).txt('normal').up();
-      
-      currentMeasure = noteEle.up();
-    });
-  });
-
-  // Add invisible placeholder note if showing only active notes
-  if (!showAllNotes) {
-    let placeholderEle = currentMeasure.ele('note', { 'print-leger': 'no', color: '#00000000' });
-    
-    placeholderEle = placeholderEle.ele('pitch')
-      .ele('step').txt('C').up()
-      .ele('octave').txt('8').up()
-      .up();
-    
-    placeholderEle = placeholderEle.ele('duration').txt('1').up()
-      .ele('type').txt('quarter').up()
-      .ele('stem').txt('none').up()
-      .ele('staff').txt('1').up()
-      .ele('notehead', { color: '#00000000' }).txt('none').up();
-    
-    currentMeasure = placeholderEle.up();
-  }
-
-  // Convert to XML string
-  return doc.end({ prettyPrint: true });
+) => {
+  return generateMusicXML({
+    showAllNotes,
+    useColors,
+    activeNotesSet
+  }, getNoteColor);
 };
 
 // Helper for formatting MIDI to note strings for display

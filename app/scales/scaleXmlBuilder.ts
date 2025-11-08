@@ -3,7 +3,7 @@
  */
 
 import { create } from 'xmlbuilder2';
-import { getNoteColor } from '../lib/noteColors';
+import { getNoteColor } from '@lib/noteColors';
 
 interface ScaleNote {
   note: string;

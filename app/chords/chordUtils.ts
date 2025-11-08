@@ -1,6 +1,27 @@
 // Utility functions for chord handling
 import { Chord as TonalChord, ChordType } from 'tonal';
-import { create } from 'xmlbuilder2';
+// MusicXML generation now centralized in chordXmlBuilder.ts
+import { generateChordMusicXML as buildChordXML } from './chordXmlBuilder';
+
+// Backward-compatible wrapper preserving previous signature used by consumers
+export function generateChordMusicXML(
+  chord: {
+    name: string;
+    abbreviation: string;
+    notes: { note: string; octave: number }[];
+    keySignature?: number;
+  },
+  format: 'arpeggio' | 'block',
+  noteColors?: string[]
+): string {
+  return buildChordXML({
+    chordName: chord.name,
+    notes: chord.notes.map(n => ({ note: n.note, octave: n.octave })),
+    format,
+    keySignature: chord.keySignature ?? 0,
+    noteColors
+  });
+}
 
 // Add type declaration for WebKit audio context
 declare global {
@@ -131,177 +152,6 @@ export function noteToFrequency(note: string, octave: number): number {
 }
 
 // Generate MusicXML for a chord in either arpeggio or block format
-export function generateChordMusicXML(
-  chord: {
-    name: string;
-    abbreviation: string;
-    notes: { note: string; octave: number }[];
-    keySignature?: number;
-  },
-  format: 'arpeggio' | 'block',
-  noteColors?: string[] // Add optional note colors parameter
-): string {
-  const notes = chord.notes;
-  const keySignature = chord.keySignature || 0;
-
-  // Pitch helpers
-  const NOTE_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'] as const;
-  const pcIndex = (n: string) => NOTE_NAMES.indexOf(n as (typeof NOTE_NAMES)[number]);
-  const toMidi = (n: string, octave: number) => (octave + 1) * 12 + pcIndex(n);
-
-  // Keep input order (root first), but compute close-position octaves relative to root
-  const voiceClosePosition = (ns: { note: string; octave: number }[], targetOctave = 4) => {
-    if (ns.length === 0) return ns;
-    const rootPc = pcIndex(ns[0].note);
-    return ns.map((n, i) => {
-      if (i === 0) return { note: n.note, octave: targetOctave };
-      const thisPc = pcIndex(n.note);
-      // If pitch class is below root within the C-based index, bump octave to keep ascending from root
-      const oct = thisPc < rootPc ? targetOctave + 1 : targetOctave;
-      return { note: n.note, octave: oct };
-    });
-  };
-
-  // Ensure strictly ascending sequence by raising octaves as needed
-  const voiceMonotonicUp = (ns: { note: string; octave: number }[], startOctave = 4) => {
-    const base = voiceClosePosition(ns, startOctave);
-    if (base.length === 0) return base;
-    let prevMidi = toMidi(base[0].note, base[0].octave);
-    const out = [base[0]] as { note: string; octave: number }[];
-    for (let i = 1; i < base.length; i++) {
-      let oct = base[i].octave;
-      let m = toMidi(base[i].note, oct);
-      while (m <= prevMidi) {
-        oct += 1;
-        m = toMidi(base[i].note, oct);
-      }
-      out.push({ note: base[i].note, octave: oct });
-      prevMidi = m;
-    }
-    return out;
-  };
-
-  // Helper function to add a note element using xmlbuilder2
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const addNoteElement = (parent: any, note: { note: string; octave: number }, duration: number, isChord = false, index: number = 0) => {
-    const baseNote = note.note.charAt(0);
-    const isSharp = note.note.includes('#');
-    const isFlat = note.note.includes('b');
-    const alter = isSharp ? '1' : (isFlat ? '-1' : '0');
-    const staffNumber = note.octave < 4 ? '2' : '1'; // Below middle C goes on bass clef
-
-    // Get color for this note
-    const noteColor = noteColors && noteColors[index] ? noteColors[index] : undefined;
-
-    // Create note element with attributes
-    const noteAttrs: Record<string, string> = {};
-    if (isChord) noteAttrs['print-object'] = 'yes';
-    if (noteColor) noteAttrs.color = noteColor;
-
-    let noteEle = parent.ele('note', noteAttrs);
-
-    // Add chord element if needed
-    if (isChord) {
-      noteEle = noteEle.ele('chord').up();
-    }
-
-    // Add pitch
-    noteEle = noteEle.ele('pitch')
-      .ele('step').txt(baseNote).up();
-    if (isSharp || isFlat) {
-      noteEle = noteEle.ele('alter').txt(alter).up();
-    }
-    noteEle = noteEle.ele('octave').txt(String(note.octave)).up().up();
-
-    // Add duration
-    noteEle = noteEle.ele('duration').txt(String(duration)).up();
-
-    // Add type
-    if (noteColor) {
-      noteEle = noteEle.ele('type', { color: noteColor }).txt('quarter').up();
-    } else {
-      noteEle = noteEle.ele('type').txt('quarter').up();
-    }
-
-    // Add accidental if needed
-    if (isSharp || isFlat) {
-      const accidentalValue = isSharp ? 'sharp' : 'flat';
-      if (noteColor) {
-        noteEle = noteEle.ele('accidental', { color: noteColor }).txt(accidentalValue).up();
-      } else {
-        noteEle = noteEle.ele('accidental').txt(accidentalValue).up();
-      }
-    }
-
-    // Add staff
-    noteEle = noteEle.ele('staff').txt(staffNumber).up();
-
-    // Add notehead and stem if color is present
-    if (noteColor) {
-      noteEle = noteEle.ele('notehead', { color: noteColor }).txt('normal').up();
-      noteEle = noteEle.ele('stem', { color: noteColor }).txt('up').up();
-    }
-
-    return noteEle.up();
-  };
-
-  // Build the MusicXML document
-  const doc = create({ version: '1.0', encoding: 'UTF-8', standalone: false })
-    .dtd({
-      pubID: '-//Recordare//DTD MusicXML 4.0 Partwise//EN',
-      sysID: 'http://www.musicxml.org/dtds/partwise.dtd'
-    })
-    .ele('score-partwise', { version: '4.0' })
-    .ele('part-list')
-    .ele('score-part', { id: 'P1' })
-    .ele('part-name').txt(chord.name).up()
-    .up()
-    .up()
-    .ele('part', { id: 'P1' })
-    .ele('measure', { number: '1' })
-    .ele('attributes')
-    .ele('divisions').txt('1').up()
-    .ele('key')
-    .ele('fifths').txt(String(keySignature)).up()
-    .up()
-    .ele('time')
-    .ele('beats').txt(String(format === 'arpeggio' ? notes.length : 4)).up()
-    .ele('beat-type').txt('4').up()
-    .up()
-    .ele('staves').txt('2').up()
-    .ele('clef', { number: '1' })
-    .ele('sign').txt('G').up()
-    .ele('line').txt('2').up()
-    .up()
-    .ele('clef', { number: '2' })
-    .ele('sign').txt('F').up()
-    .ele('line').txt('4').up()
-    .up()
-    .up();
-
-  // Compute voiced notes per requested format
-  const voicedNotes = format === 'arpeggio'
-    ? voiceMonotonicUp(notes, 4)
-    : voiceClosePosition(notes, 4);
-
-  // Add notes
-  let currentMeasure = doc;
-
-  if (format === 'arpeggio') {
-    voicedNotes.forEach((note, index) => {
-      currentMeasure = addNoteElement(currentMeasure, note, 1, false, index);
-    });
-  } else {
-    // Block chord: first note then chord-tagged remaining
-    currentMeasure = addNoteElement(currentMeasure, voicedNotes[0], 4, false, 0);
-    voicedNotes.slice(1).forEach((note, index) => {
-      currentMeasure = addNoteElement(currentMeasure, note, 4, true, index + 1);
-    });
-  }
-
-  // Convert to XML string
-  return doc.end({ prettyPrint: true });
-}
 
 // Public helpers to align playback with notation
 export function voiceChordNotes(

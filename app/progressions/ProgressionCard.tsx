@@ -4,7 +4,7 @@ import { resolveProgression } from './progressionUtils';
 import { generateProgressionMusicXML } from './progressionXmlBuilder';
 import ProgressionPlayer from './ProgressionPlayer';
 import CustomKeyboard from '@/components/Keyboard/CustomKeyboard';
-import { rangeFromMinMidiTwoOctaves } from '../lib/keyboardRange';
+import { rangeFromMinMidiTwoOctaves } from '@lib/keyboardRange';
 import { chordSymbolToNotes } from './progressionUtils';
 import styles from './progressions.module.css';
 

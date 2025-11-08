@@ -24,6 +24,64 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 
 AI and human collaborators should review the [Copilot Instructions](./.github/copilot-instructions.md) before making changes to ensure consistency with project conventions.
 
+### Project structure and conventions
+
+- Stack: TypeScript, React, Next.js (App Router). Package manager: Yarn.
+- Styling: CSS Modules in `*.module.css`.
+- XML generation: Uses `xmlbuilder2`. Prefer dedicated builder modules over string concatenation.
+
+### Centralized MusicXML builders
+
+- Scales: `app/scales/scaleXmlBuilder.ts`
+- Chords: `app/chords/chordXmlBuilder.ts`
+- Rhythm: `app/rhythm/rhythmXmlBuilder.ts`
+- Sound (staff view): `app/sound/musicXmlBuilder.ts`
+
+Avoid duplicating MusicXML logic in utilities or components; import from these builders instead.
+
+### Shared libraries and path aliases
+
+Common utilities live under the top-level `lib/` directory and are imported via path aliases configured in `tsconfig.json`:
+
+```jsonc
+{
+	"compilerOptions": {
+		"baseUrl": "./",
+		"paths": {
+			"@/*": ["./*"],
+			"@lib/*": ["./lib/*"],
+			"@app/*": ["./app/*"]
+		}
+	}
+}
+```
+
+- Note color system: `lib/noteColors.ts`
+- Keyboard range helpers: `lib/keyboardRange.ts`
+- MIDI input manager: `lib/midiInputManager.ts`
+
+Examples:
+
+```ts
+import { getNoteColor } from '@lib/noteColors';
+import { rangeFromMinMidiTwoOctaves } from '@lib/keyboardRange';
+import { MidiInputManager } from '@lib/midiInputManager';
+```
+
+### Metadata
+
+Use the Next.js Metadata API in `layout.tsx` instead of `head.tsx`. Old `head.tsx` files have been removed.
+
+### Linting
+
+Use Yarn:
+
+```bash
+yarn lint
+```
+
+Ensure there are no ESLint errors before opening a PR.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

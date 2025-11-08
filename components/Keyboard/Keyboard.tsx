@@ -4,7 +4,7 @@ import { Piano, MidiNumbers } from 'react-piano';
 import 'react-piano/dist/styles.css';
 import styles from './Keyboard.module.css';
 import { useState, useEffect, useRef, useMemo } from 'react';
-import { getNoteColor } from '../../app/lib/noteColors';
+import { getNoteColor } from '@lib/noteColors';
 
 // Component props
 interface KeyboardProps {

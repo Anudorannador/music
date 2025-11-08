@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import 'react-piano/dist/styles.css';
 import PlayKeys from '../../components/PlayKeys';
 import styles from './chords.module.css';
-import { snapLeftToCOrF, PIANO_MIN_MIDI, PIANO_MAX_MIDI } from '../lib/keyboardRange';
+import { snapLeftToCOrF, PIANO_MIN_MIDI, PIANO_MAX_MIDI } from '@lib/keyboardRange';
 import { Chord, getVoicedMidiNotes } from './chordUtils';
 
 // Component to render a chord using react-piano

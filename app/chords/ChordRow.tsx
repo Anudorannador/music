@@ -8,7 +8,7 @@ import {
 } from './chordUtils';
 import ChordKeyboard from './ChordKeyboard';
 import PlayNotation from '../../components/PlayNotation';
-import { getNoteColors } from '../lib/noteColors';
+import { getNoteColors } from '@lib/noteColors';
 
 export type ListItemAriaAttributes = {
   role: 'listitem';

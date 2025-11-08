@@ -1,7 +1,7 @@
 'use client';
 import { useMemo } from 'react';
 import { Note } from 'tonal';
-import { rangeFromMinMidiTwoOctaves } from '../lib/keyboardRange';
+import { rangeFromMinMidiTwoOctaves } from '@lib/keyboardRange';
 import type { ScaleInfo } from './scaleUtils';
 import PlayKeys from '../../components/PlayKeys';
 import 'react-piano/dist/styles.css';
